@@ -1,0 +1,335 @@
+%============================================================================================%
+%		MATHFEST BEAMER THEME
+%============================================================================================%
+% Based on the Unofficial Pomona College Beamer Theme by Sireesh Vinnakota,
+% itself based on a template by Michael Kirker (http://michaelkirker.net).
+%
+% Colors and logo changed for MAA MathFest 2026.
+
+
+%============================================================================================%
+% 		Packages that will be used
+%============================================================================================%
+\usepackage{xcolor}				% Create custom colors
+\usepackage[overlay]{textpos} 			% Position logo in each slide header
+\usepackage{tikz, multicol, amsmath, amssymb, amsfonts, amsthm, graphicx, hyperref}
+\usepackage{animate}
+\usetikzlibrary{shadings}
+
+
+%============================================================================================%
+% 		Change some global settings
+%============================================================================================%
+
+% Make hidden upcoming elements in a slide semi-transparent rather than completely invisible
+
+\mode<presentation>{
+		\setbeamercovered{invisible}
+		}
+
+
+% Specify baseline theme from which we will build off
+
+\usetheme{Madrid}
+
+
+% Remove the navigation symbols from the lower right corner of each slide
+
+\beamertemplatenavigationsymbolsempty
+
+
+
+%============================================================================================%
+%		Define colors
+%============================================================================================%
+
+% Main palette
+	\definecolor{MathGreen}{RGB}{159,181,72}		% #9fb548, primary color
+	\definecolor{MathBlue}{RGB}{38,118,163}		% #2676a3, accent color
+	\definecolor{MathDarkGray}{RGB}{118,118,118}
+	\definecolor{MathLightGray}{RGB}{214,214,206}
+
+% Derived shades (used for the title bar and title-slide gradient)
+	\colorlet{MathGreenDark}{MathGreen!55!black}
+
+\setbeamercolor*{frametitle}{fg=white}
+
+\setbeamercolor*{title}{use=structure,fg=white,bg=MathGreen}
+
+
+%============================================================================================%
+%		Assign colors
+%============================================================================================%
+
+% Specify base color of the presentation
+	\usecolortheme[named=MathDarkGray]{structure}
+
+% Specify other specific colors
+	\setbeamercolor{block title alerted}{fg=white,bg=MathBlue}
+	\setbeamercolor{block body alerted}{bg=MathBlue!20!white}
+
+	\setbeamercolor{block title}{bg=MathGreen,fg=white}
+	\setbeamercolor{block body}{bg=MathLightGray}
+
+	\setbeamercolor{block title example}{bg=MathGreenDark,fg=white}
+	\setbeamercolor{block body example}{bg=MathGreen!25!white,fg=black}
+
+	\setbeamercolor{author in head/foot}{bg=MathGreen,fg=white}
+ 	\setbeamercolor{title in head/foot}{bg=MathDarkGray,fg=white}
+ 	\setbeamercolor{date in head/foot}{bg=MathGreen,fg=white}
+ 	\setbeamercolor{date in head/foot}{bg=MathLightGray,fg=MathGreen}
+
+ \setbeamertemplate{headline}{
+ \begin{beamercolorbox}{section in head/foot} \vskip2pt\insertnavigation{\paperwidth}\vskip2pt
+ \end{beamercolorbox}}
+
+
+
+%============================================================================================%
+%		Theme the blocks
+%============================================================================================%
+
+% Use sharp right angle corners rather than the rounded corners
+\setbeamertemplate{blocks}[default]
+
+
+
+%============================================================================================%
+%		Adjust fonts
+%============================================================================================%
+
+% Here we are using default fonts
+\usefonttheme{professionalfonts}
+
+
+
+%============================================================================================%
+%		Inner theme
+%============================================================================================%
+% Here we are using the rounded theme for the overall "feel" of the presentation. You can change the specific details by editing that particular option as we have done below.
+\useinnertheme{rounded}
+
+
+\setbeamercolor{button}{bg=MathLightGray,fg=white}
+
+
+%============================================================================================%
+%		Create slide title bar
+%============================================================================================%
+% Slide title bar features a green gradient with a small logo on the right hand side
+
+% Create Shading:
+
+\colorlet{titleleft}{MathGreen}
+\colorlet{titleright}{MathGreenDark}
+
+\makeatletter
+\pgfdeclarehorizontalshading[titleleft,titleright]{beamer@frametitleshade}{\paperheight}{%
+  color(0pt)=(titleleft);
+  color(\paperwidth)=(titleright)}
+
+\defbeamertemplate*{frametitle}{horizontal shading}
+{%
+  \nointerlineskip%
+  \hbox{\leavevmode
+    \advance\beamer@leftmargin by -12bp%
+    \advance\beamer@rightmargin by -12bp%
+    \beamer@tempdim=\textwidth%
+    \advance\beamer@tempdim by \beamer@leftmargin%
+    \advance\beamer@tempdim by \beamer@rightmargin%
+    \hskip-\Gm@lmargin\hbox{%
+      \setbox\beamer@tempbox=\hbox{\begin{minipage}[b]{\paperwidth}%
+          \vbox{}\vskip-.75ex%
+          \leftskip0.3cm%
+          \rightskip0.3cm plus1fil\leavevmode
+          \insertframetitle%
+          \ifx\insertframesubtitle\@empty%
+            \strut\par%
+          \else
+            \par{\usebeamerfont*{framesubtitle}{\usebeamercolor[fg]{framesubtitle}\insertframesubtitle}\strut\par}%
+          \fi%
+          \nointerlineskip
+          \vbox{}%
+          \end{minipage}}%
+      \beamer@tempdim=\ht\beamer@tempbox%
+      \advance\beamer@tempdim by 2pt%
+      \begin{pgfpicture}{0pt}{0pt}{\paperwidth}{\beamer@tempdim}
+        \usebeamercolor{frametitle right}
+        \pgfpathrectangle{\pgfpointorigin}{\pgfpoint{\paperwidth}{\beamer@tempdim}}
+        \pgfusepath{clip}
+        \pgftext[left,base]{\pgfuseshading{beamer@frametitleshade}}
+      \end{pgfpicture}
+      \hskip-\paperwidth%
+      \box\beamer@tempbox%
+    }%
+    \hskip-\Gm@rmargin%
+  }%
+    \vskip-2pt
+}
+\makeatother
+
+
+% Add small institutional logo to the top right of each frame title
+
+\addtobeamertemplate{frametitle}{}{%
+	\begin{textblock*}{3.5em}[1,0](0.967\paperwidth,-0.64cm)
+	\includegraphics[width=3.5em,keepaspectratio]{img/institution_logo}
+	\end{textblock*}
+}
+
+
+
+%============================================================================================%
+% 		Customize enumerates and itemized lists
+%============================================================================================%
+
+% Enumerated lists:
+%---------------------
+
+\setbeamertemplate{enumerate items}[default] 	% Use numbers (e.g. "1.")
+
+\setbeamercolor*{enumerate item}{fg=MathGreen}
+\setbeamercolor*{enumerate subitem}{fg=MathGreen}
+\setbeamercolor*{enumerate subsubitem}{fg=MathGreen}
+
+
+
+% Itemized lists:
+%---------------------
+
+% Use MathGreen color when the user defines their own itemize marker
+\setbeamercolor*{itemize item}{fg=MathGreen}
+\setbeamercolor*{itemize subitem}{fg=MathGreen}
+\setbeamercolor*{itemize subsubitem}{fg=MathGreen}
+
+
+
+%============================================================================================%
+%		Create title slide
+%============================================================================================%
+
+% Customize the text layout:
+
+\setbeamerfont{title}{size=\huge}
+\defbeamertemplate*{title page}{customized}[1][]
+{
+  \usebeamerfont{title}\usebeamercolor[white]{title}\inserttitle\par
+  \usebeamerfont{subtitle}\usebeamercolor[white]{subtitle}\insertsubtitle\par
+  \bigskip
+  \bigskip
+  \bigskip
+  \bigskip
+  \centering
+  \usebeamerfont{author}\insertauthor\par
+  \smallskip
+  \usebeamerfont{institute}\insertinstitute\par
+  \bigskip
+  \usebeamerfont{date}\insertdate\par
+  \usebeamercolor[fg]{titlegraphic}\inserttitlegraphic
+
+}
+
+
+% Create title slide background: a green gradient with the institutional logo
+% in the bottom right corner
+
+\newcommand\BackgroundShaded{%
+\setbeamertemplate{background}{%
+\begin{tikzpicture}[every node/.style={inner sep=0,outer sep=0}]
+    \shade [left color=MathGreen,right color=MathGreenDark]
+      (0,0) rectangle (\paperwidth,\paperheight);
+      \node [above left] (mathfestlogo) at (\paperwidth-1,0.31)
+    {\includegraphics[width=.3\paperwidth,keepaspectratio]{img/institution_logo}};
+  \end{tikzpicture}
+}}
+
+
+\renewcommand\maketitle{
+	{\BackgroundShaded
+	\begin{frame}
+	\titlepage
+	\end{frame}
+	}
+}
+
+
+%============================================================================================%
+% 		Customize \tableofcontent
+%============================================================================================%
+% Simpler design: bold green numbers, and black text
+
+\setbeamerfont{section number projected}{series=\bfseries,size=\normalsize}
+\setbeamercolor{section number projected}{bg=white,fg=MathGreen}
+\setbeamertemplate{sections/subsections in toc}[square]
+\setbeamercolor{section in toc}{fg=black}
+\setbeamercolor{subsection in toc}{fg=black}
+
+
+%============================================================================================%
+% 		Don't count appendix slides in the number of total slides displayed on lower right corner of each slide.
+%============================================================================================%
+
+\makeatletter
+
+\let\appendixtotalframenumber\empty
+\def\mainend{-1}
+\let\appendixorig\appendix
+
+\def\appendix{
+  \edef\mainend{\theframenumber}
+  \immediate\write\@auxout{\string\global\string\@namedef{mainendframenumber}{\mainend}}
+  \appendixorig
+  \def\inserttotalframenumber{\appendixtotalframenumber}%
+  \setcounter{framenumber}{0}
+}
+
+\def\pageatend{
+  \edef\appendixend{\theframenumber}
+  \ifnum\mainend>0%
+  \immediate\write\@auxout{\string\global\string\@namedef{appendixtotalframenumber}{\appendixend}}%
+  \immediate\write\@auxout{\string\global\string\@namedef{inserttotalframenumber}{\mainend}}%
+  \immediate\write\@auxout{\string\@writefile{nav}{\noexpand \headcommand {%
+        \noexpand \def\noexpand \inserttotalframenumber{\mainend}}}}%
+  \immediate\write\@auxout{\string\@writefile{nav}{\noexpand \headcommand {%
+        \noexpand \def\noexpand \appendixtotalframenumber{\appendixend}}}}%
+  \else
+  \fi
+}
+
+
+\AtEndDocument{\pageatend}
+\makeatother
+
+
+%============================================================================================%
+% 		Math environments and shortcuts
+%============================================================================================%
+
+\newcounter{count}
+
+\newtheorem{prop}[count]{Proposition}
+\newtheorem{ec}[count]{Extra Credit}
+\newtheorem{thm}[count]{Theorem}
+\newtheorem{cor}[count]{Corollary}
+\newtheorem{pro}[count]{Problem}
+\newtheorem{defi}[count]{Definition}
+\newtheorem{lem}[count]{Lemma}
+\newtheorem{res}[count]{Result}
+\newtheorem{cl}[count]{Claim}
+\newtheorem{aun}{Author's Note}
+\newtheorem{exx}[count]{Example}
+\newtheorem{mq}[count]{Motivating Question}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+
+\newcommand{\lrp}[1]{\left ( {#1} \right )}
+\newcommand{\lrb}[1]{\left [ {#1} \right ]}
+\newcommand{\lrsq}[1]{\left \{ {#1} \right \}}
+\newcommand{\lrabs}[1]{\left | {#1} \right |}
+\newcommand{\lrfl}[1]{\left \lfloor {#1} \right \rfloor}
+
+\newcommand{\mte}[1]{\quad \text{#1} \quad}
