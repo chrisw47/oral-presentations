@@ -1,0 +1,276 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{beamerthemeMathFest}
+\usepackage{tcolorbox}
+\usepackage{physics}
+\usepackage{booktabs}
+\usetikzlibrary{calc, positioning}
+
+\title[MaxEnt Models]{Applying Maximum Entropy Models to Organism Sensors}
+\subtitle{MAA MathFest 2026, Boston, MA}
+\author{Christopher Wang}
+\institute{Scripps College}
+\date{August 7, 2026}
+
+\graphicspath{figs/}
+
+\begin{document}
+
+\maketitle
+
+\section{Background}
+
+\begin{frame}{Motivation}
+
+\begin{columns}
+	\begin{column}{0.62\textwidth}
+		\textbf{\textcolor{red!60!black}{How do biological organisms understand their enviornment?}}
+		\vspace{1em}
+		\uncover<2>{\begin{enumerate}\addtolength{\itemsep}{10pt}
+			\item Encodes information about enviornment
+			\item Past, present, and future
+			\item Constraint: energetic cost of encoding
+		\end{enumerate}}
+	\end{column}
+	\begin{column}{0.35\textwidth}
+		\begin{figure}
+			\includegraphics[width=0.9\textwidth]{figs/rainman.png}
+		\end{figure}
+	\end{column}
+\end{columns}
+\end{frame}
+
+
+\begin{frame}{Entropy: a Fundamental Player}
+
+\vspace{1em}
+
+\begin{center}
+	\textbf{How well can we encode/compress information?}	
+\end{center}
+
+\vspace{1em}
+
+\begin{block}{Shannon Entropy}
+	For a random variable $X$ and event space $\mathcal{X}$,
+\begin{equation}
+	H[X] = -\sum_{x \in \mathcal{X}} p(x) \log_b(p(x)),
+\end{equation}
+where $b=2,e,10$ most commonly. 
+\end{block}
+\end{frame}
+
+\begin{frame}{Entropy: a Fundamental Player}
+
+\begin{columns}
+	\begin{column}{0.65\textwidth}
+	\begin{exampleblock}{Flipping Coins ($b=2$)}
+		Entropy of one fair coin flip ($C$) and one biased ($B,~p_\text{heads}=0.7$):
+	\pause
+	\begin{align}
+		H[C] &= -\sum_{x \in \mathcal{X}} p(x) \log_b(p(x)) = -\log_2(1 / 2) = 1 \text{ bit.} \\
+		H[B] &= -0.7\log_2(0.7) -0.3\log_2(0.3) \approx 0.88 \text{ bits.}
+	\end{align}
+	\pause
+		Entropy of flipping two fair coins ($C_1, C_2$):
+	\begin{equation}
+		H[C_1, C_2] = -\log_2(1 / 4) = H[C] + H[C] = 2 \text{ bits.}
+	\end{equation}
+	\pause
+		Entropy of flipping two coins and adding them ($C_1+C_2$):
+	\begin{equation}
+		H[C_1+C_2] = 1.5 \text{ bits.}
+	\end{equation}
+\end{exampleblock}
+	\end{column}
+	\hfill
+	\pause
+	\begin{column}{0.3\textwidth}
+		Key takeaways:
+		\vspace{10pt}
+		\begin{itemize}\addtolength{\itemsep}{10pt}
+			\item $H[X, Y] \le H[X] + H[Y]$, equality if $X, Y$ ind.
+			\item ``Surprisal": $-\log p$
+			\item \textcolor{red!80!black}{Maximum entropy maximizes surprisal}
+		\end{itemize}
+	\end{column}
+\end{columns}
+
+
+\end{frame}
+
+\begin{frame}{Mutual Information: One Take on Entropy}
+	\only<1-3>{\begin{tcolorbox}[colback=red!20!white, arc=2mm, colframe=red!60!black]
+		How much information do I gain about the environment by analyzing a biological sensor system?
+	\end{tcolorbox}}
+
+	\only<2,3>{\begin{equation}
+		I[S; X] = H[S] - H[S \mid X],
+	\end{equation}
+	where $S$ is the environment/stimulus and $X$ is the biological sensor system.}
+	
+	\vspace{1em}
+
+	\only<3>{\begin{itemize}\addtolength{\itemsep}{8pt}
+		\item Typically used in the field
+		\item Yields one loosely interpretable value given $S, X$
+		\item Often difficult to calculate (many estimators are needed)
+		\item Gives just one piece of information about sensor-environment system
+	\end{itemize}}
+\end{frame}
+
+\begin{frame}{Maximum Entropy: An Alternate Lens}
+	\begin{columns}
+		\begin{column}{0.47\textwidth}
+			\only<1-4>{\begin{center}
+				\textsc{The general pipeline}
+			\end{center}
+			\begin{itemize}\addtolength{\itemsep}{8pt}
+				\item Given constraints, get $p(\vb{x})$ that maximizes $H[X]$ (maximal `surprisal').
+				\begin{itemize}
+					\item[$\rightarrow$] Least biased model
+					\item[$\rightarrow$] Equivalent to minimizing KL divergence
+					\item[$\rightarrow$] Stat mech models work too!
+				\end{itemize}}
+				\only<3,4>{\item Get environmental estimator via Maximum Likelihood Estimation
+				\begin{itemize}
+					\item[$\rightarrow$] $\hat{x}(s) = \arg\max_{x} p(x \mid s)$
+				\end{itemize}}
+				\only<4>{\item How good is the estimator?
+				\begin{itemize}
+					\item[$\rightarrow$] Ordered: bias, variance
+					\item[$\rightarrow$] Categorical: confusion matrices 
+				\end{itemize}}
+	\end{itemize}
+		\end{column}
+		\hfill
+		\begin{column}{0.47\textwidth}
+			\only<2-4>{\begin{equation}
+				p(\vb{x}) = \frac{1}{Z} \exp(\sum_{\mu} \lambda_\mu f_\mu(\vb{x}))
+			\end{equation}
+			\vspace{1em}
+			\begin{itemize}
+				\item[$\rightarrow$] $\vb{x}~$: Joint environment-sensor state vector
+				\item[$\rightarrow$] $Z~$: Normalization constant
+				\item[$\rightarrow$] $\lambda_\mu$: Constraint Lagrange multipliers
+				\item[$\rightarrow$] $f_\mu$: Constraint equations
+			\end{itemize}}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\section{Results}
+
+\begin{frame}{MaxEnt: New Insights with Cooperative Sensors}
+	\begin{columns}
+		\begin{column}{0.47\textwidth}
+			\begin{itemize}\addtolength{\itemsep}{8pt}
+				\item Two-sensor system: Cooperativity or not?
+				\item Mutual information
+				\begin{itemize}
+					\item[$\rightarrow$] No cooperativity is best 
+				\end{itemize}
+				\item MaxEnt
+				\begin{itemize}
+					\item[$\rightarrow$] Depends on the ligand concentration
+					\item[$\rightarrow$] More aligned with previous findings 
+				\end{itemize}
+			\end{itemize}
+		\end{column}
+		\hfill
+		\begin{column}{0.47\textwidth}
+			\begin{figure}
+				\includegraphics[width=0.9\textwidth]{figs/figuremselegend5.pdf}
+			\end{figure}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{MaxEnt: More Information with Cultured Cortical Neurons}
+
+\begin{columns}
+	\begin{column}{0.47\textwidth}
+		\begin{itemize}
+			\item Model probability distribution ($\vb{x} = (x, \vb{s})$):
+			\begin{equation}
+				p(\vb{x}) = \frac{1}{Z}\exp(\vb{x}^\top J \vb{x})
+			\end{equation}
+			\item Estimator: compute likelihood ratio via
+			\begin{equation}
+				L(\vb{s}) = \exp(-J_{xx}-2J_{xs}\cdot \vb{s})
+			\end{equation}
+		\end{itemize}
+	\end{column}
+	\hfill
+	\begin{column}{0.47\textwidth}
+		\only<1>{\resizebox{\linewidth}{!}{%
+		\begin{tikzpicture}[
+	box/.style={draw, thick, minimum width=3.4cm, minimum height=2.4cm, align=center, font=\footnotesize},
+	lbl/.style={font=\bfseries\small}
+]
+	% 2x2 grid of cells: rows = predicted (top to bottom), columns = actual (left to right)
+	\node[box, fill=MathGreen!20] (c00) at (0,0)      {True negative rate};
+	\node[box, fill=MathBlue!15]  (c01) at (3.4,0)    {False negative rate};
+	\node[box, fill=MathBlue!15]  (c10) at (0,-2.4)   {False positive rate};
+	\node[box, fill=MathGreen!20] (c11) at (3.4,-2.4) {True positive rate};
+
+	% column headers: actual class
+	\node[lbl, above=0.3cm of c00] {Actual 0};
+	\node[lbl, above=0.3cm of c01] {Actual 1};
+
+	% row headers: predicted class
+	\node[lbl, rotate=90, anchor=south] at ($(c00.west)+(-1.2,0)$) {Predicted 0};
+	\node[lbl, rotate=90, anchor=south] at ($(c10.west)+(-1.2,0)$) {Predicted 1};
+\end{tikzpicture}}}
+\only<2>{
+	\begin{figure}
+			\includegraphics[width=0.8\textwidth]{figs/predacc.png}
+	\end{figure}
+}
+	\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{MaxEnt: More Information with Cultured Cortical Neurons}
+	\begin{figure}
+		\includegraphics[width=0.7\textwidth]{figs/tnptpp.png}
+	\end{figure}
+\end{frame}
+
+
+\section{Recap}
+
+\begin{frame}{Recap}
+	\renewcommand{\arraystretch}{2}
+	\centering
+	\footnotesize
+	\begin{tabular}{@{} l p{3.1cm} p{3.1cm} p{3.1cm} @{}}
+		\toprule
+		 & \textcolor{MathGreen}{\textbf{Mutual Information}} & \textcolor{MathGreen}{\textbf{Bias/Variance}} & \textcolor{MathGreen}{\textbf{Confusion Matrices}} \\
+		\midrule
+		\textbf{Variable Type} & Any & Ordered / continuous & Categorical \\
+		\textbf{Output} & Single scalar & Bias, Variance as a function of input & Error rates per category \\
+		\textbf{Interpretation} & One loosely interpretable value & Accuracy (bias), precision (variance) & Per-class error breakdown \\
+		\textbf{Computational Scaling} & Exponential & Roughly power law & Power law or exponential, depending on situation \\
+		\bottomrule
+	\end{tabular}
+\end{frame}
+
+\section{Acknowledgements}
+
+\begin{frame}{Acknowledgements}
+	\begin{itemize}\addtolength{\itemsep}{10pt}
+		\item PI: Sarah Marzen
+		\item Co-authors: Eliana Schimke, Martina Lamberti, Joost le Feber, Tristan Kako, Sarah Marzen
+	\end{itemize}
+\end{frame}
+
+{\BackgroundShaded
+\begin{frame}
+\begin{center}
+	\Large{\textcolor{white}{Thank you!}}
+\end{center}
+\vspace{1cm}
+\textcolor{white}{Here's the paper for more info: https://www.biorxiv.org/content/10.64898/2026.01.12.698979v1}
+\end{frame}}
+
+\end{document}
